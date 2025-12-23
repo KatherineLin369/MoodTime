@@ -9,11 +9,11 @@ interface MoodPickerProps {
 }
 
 const MOODS = [
-  { value: 1, label: "Rough", icon: Frown, color: "text-red-400 bg-red-50 border-red-200" },
-  { value: 2, label: "Not Great", icon: Annoyed, color: "text-orange-400 bg-orange-50 border-orange-200" },
-  { value: 3, label: "Okay", icon: Meh, color: "text-yellow-400 bg-yellow-50 border-yellow-200" },
-  { value: 4, label: "Good", icon: Smile, color: "text-primary bg-blue-50 border-blue-200" },
-  { value: 5, label: "Great!", icon: SmilePlus, color: "text-green-500 bg-green-50 border-green-200" },
+  { value: 1, label: "Rough", icon: Frown, color: "text-rose-500 bg-rose-50 border-rose-200" },
+  { value: 2, label: "Not Great", icon: Annoyed, color: "text-orange-500 bg-orange-50 border-orange-200" },
+  { value: 3, label: "Okay", icon: Meh, color: "text-accent bg-accent/10 border-accent/20" },
+  { value: 4, label: "Good", icon: Smile, color: "text-primary bg-primary/10 border-primary/20" },
+  { value: 5, label: "Great!", icon: SmilePlus, color: "text-secondary bg-secondary/10 border-secondary/20" },
 ];
 
 export function MoodPicker({ value, onChange, className }: MoodPickerProps) {
