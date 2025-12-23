@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Smile, Shield, HeartHandshake, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import moodTimeDesign from "@assets/IMG_1475_1766455685060.jpeg";
 
 export default function Landing() {
   const handleLogin = () => {
@@ -8,7 +9,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-accent/20 via-white to-secondary/20 flex flex-col">
       <nav className="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
         <div className="flex items-center gap-2">
           <div className="bg-primary/10 p-2 rounded-full">
@@ -23,8 +24,8 @@ export default function Landing() {
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-20 text-center relative overflow-hidden">
         {/* Decorative background blobs */}
-        <div className="absolute top-1/4 -left-20 w-72 h-72 bg-purple-200/30 rounded-full blur-3xl mix-blend-multiply animate-pulse" />
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-blue-200/30 rounded-full blur-3xl mix-blend-multiply animate-pulse" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-1/4 -left-20 w-72 h-72 bg-secondary/40 rounded-full blur-3xl mix-blend-multiply animate-pulse" />
+        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-primary/40 rounded-full blur-3xl mix-blend-multiply animate-pulse" style={{ animationDelay: "1s" }} />
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -32,13 +33,22 @@ export default function Landing() {
           transition={{ duration: 0.6 }}
           className="max-w-3xl mx-auto space-y-8 relative z-10"
         >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex justify-center mb-8"
+          >
+            <img src={moodTimeDesign} alt="MoodTime" className="h-48 object-contain drop-shadow-2xl" />
+          </motion.div>
+          
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-100 shadow-sm text-sm font-medium text-slate-600 mb-4">
-            <Sparkles className="w-4 h-4 text-amber-400" />
+            <Sparkles className="w-4 h-4 text-accent" />
             <span>Your safe space for mental wellness</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold font-display text-slate-800 leading-tight tracking-tight">
-            Find your <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500">calm</span> in the chaos.
+            Find your <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">calm</span> in the chaos.
           </h1>
           
           <p className="text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
@@ -49,7 +59,7 @@ export default function Landing() {
             <Button 
               onClick={handleLogin} 
               size="lg" 
-              className="rounded-full px-12 py-8 text-xl shadow-xl shadow-primary/25 hover:shadow-2xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-primary to-indigo-500 border-0"
+              className="rounded-full px-12 py-8 text-xl shadow-xl shadow-primary/25 hover:shadow-2xl hover:scale-105 transition-all duration-300 bg-gradient-to-r from-primary to-secondary border-0"
             >
               Start Your Journey
             </Button>

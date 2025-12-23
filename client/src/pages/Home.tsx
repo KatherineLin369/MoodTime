@@ -45,7 +45,7 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           className="md:col-span-2"
         >
-          <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-8 text-white shadow-xl shadow-indigo-200 relative overflow-hidden h-full flex flex-col justify-center">
+          <div className="bg-gradient-to-br from-primary to-secondary rounded-3xl p-8 text-white shadow-xl shadow-primary/20 relative overflow-hidden h-full flex flex-col justify-center">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16" />
             <div className="relative z-10">
               <span className="inline-block px-3 py-1 bg-white/20 rounded-full text-xs font-medium mb-4 backdrop-blur-sm">
