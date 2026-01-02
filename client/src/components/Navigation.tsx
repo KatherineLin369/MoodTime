@@ -1,3 +1,4 @@
+import circleLogo from "@assets/IMG_1476_1766455685060.jpeg";
 import { Link, useLocation } from "wouter";
 import { 
   Home, 
@@ -31,9 +32,7 @@ export function Sidebar() {
   return (
     <div className="hidden md:flex flex-col w-64 h-screen bg-white border-r border-border fixed left-0 top-0 z-20 shadow-sm">
       <div className="p-8 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-          <Smile className="w-5 h-5" />
-        </div>
+        <img src={circleLogo} alt="Logo" className="w-10 h-10 object-contain" />
         <span className="text-2xl font-bold font-display text-slate-800 tracking-tight">MoodTime</span>
       </div>
 
@@ -75,9 +74,7 @@ export function MobileHeader() {
   return (
     <div className="md:hidden flex items-center justify-between p-4 bg-white/80 backdrop-blur-md border-b sticky top-0 z-30">
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-          <Smile className="w-5 h-5" />
-        </div>
+        <img src={circleLogo} alt="Logo" className="w-8 h-8 object-contain" />
         <span className="text-xl font-bold font-display text-slate-800">MoodTime</span>
       </div>
 
@@ -89,7 +86,8 @@ export function MobileHeader() {
         </SheetTrigger>
         <SheetContent side="left" className="w-72 p-0">
           <div className="flex flex-col h-full bg-white">
-            <div className="p-6 border-b">
+            <div className="p-6 border-b flex items-center gap-2">
+              <img src={circleLogo} alt="Logo" className="w-10 h-10 object-contain" />
               <span className="text-2xl font-bold font-display text-slate-800">MoodTime</span>
             </div>
             <nav className="flex-1 px-4 py-6 space-y-2">
