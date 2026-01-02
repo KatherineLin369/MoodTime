@@ -1,5 +1,6 @@
+import circleLogo from "@assets/IMG_1476_1766455685060.jpeg";
 import { Button } from "@/components/ui/button";
-import { Smile, Shield, HeartHandshake, Sparkles } from "lucide-react";
+import { Shield, HeartHandshake, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import moodTimeDesign from "@assets/IMG_1475_1766455685060.jpeg";
 
@@ -12,9 +13,7 @@ export default function Landing() {
     <div className="min-h-screen bg-gradient-to-br from-accent/20 via-white to-secondary/20 flex flex-col">
       <nav className="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
         <div className="flex items-center gap-2">
-          <div className="bg-primary/10 p-2 rounded-full">
-            <Smile className="w-6 h-6 text-primary" />
-          </div>
+          <img src={circleLogo} alt="Logo" className="w-10 h-10 object-contain" />
           <span className="text-2xl font-bold font-display text-slate-800">MoodTime</span>
         </div>
         <Button onClick={handleLogin} variant="outline" className="rounded-full px-6 border-primary/20 text-primary hover:bg-primary/5">
@@ -37,9 +36,15 @@ export default function Landing() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex justify-center mb-8"
+            className="flex justify-center mb-8 relative"
           >
-            <img src={moodTimeDesign} alt="MoodTime" className="h-48 object-contain drop-shadow-2xl" />
+            {/* Blended Logo with Glow */}
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-[100px] animate-pulse" />
+            <img 
+              src={moodTimeDesign} 
+              alt="MoodTime" 
+              className="h-64 object-contain drop-shadow-[0_0_35px_rgba(255,255,255,0.8)] relative z-10 mix-blend-multiply" 
+            />
           </motion.div>
           
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-100 shadow-sm text-sm font-medium text-slate-600 mb-4">
