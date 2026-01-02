@@ -46,8 +46,8 @@ export default function MoodJournal() {
     if (!value) return;
     
     createMood({
-      value,
-      emotions: selectedEmotions,
+      mood: value,
+      emotion: selectedEmotions.join(", "),
       note: note.trim() || undefined
     }, {
       onSuccess: () => {
@@ -78,7 +78,7 @@ export default function MoodJournal() {
   // Transform data for chart
   const chartData = moods?.slice(-7).map(m => ({
     date: format(new Date(m.createdAt), "EEE"),
-    value: m.value
+    value: m.mood
   })) || [];
 
   return (
@@ -222,10 +222,10 @@ export default function MoodJournal() {
               History
             </h3>
             <div className="space-y-4">
-              {moods?.slice().reverse().map(mood => (
+              {moods?.map(mood => (
                 <div key={mood.id} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex gap-4">
                   <div className="text-2xl pt-1">
-                    {mood.value === 5 ? '🤩' : mood.value === 4 ? '🙂' : mood.value === 3 ? '😐' : mood.value === 2 ? '😕' : '😢'}
+                    {mood.mood === 5 ? '🤩' : mood.mood === 4 ? '🙂' : mood.mood === 3 ? '😐' : mood.mood === 2 ? '😕' : '😢'}
                   </div>
                   <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -233,9 +233,9 @@ export default function MoodJournal() {
                         {format(new Date(mood.createdAt), "MMMM d, h:mm a")}
                       </span>
                     </div>
-                    {mood.emotions.length > 0 && (
+                    {mood.emotion && (
                       <div className="flex flex-wrap gap-1 mb-2">
-                        {mood.emotions.map(e => (
+                        {mood.emotion.split(", ").map(e => (
                           <span key={e} className="text-[10px] px-2 py-0.5 bg-slate-50 text-slate-500 rounded-full border border-slate-100">
                             {e}
                           </span>

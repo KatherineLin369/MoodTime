@@ -13,8 +13,8 @@ const moodSchema = z.object({
 export type Mood = z.infer<typeof moodSchema>;
 
 export type CreateMoodInput = {
-  value: number;
-  emotions: string[];
+  mood: number;
+  emotion?: string;
   note?: string;
 };
 
@@ -25,20 +25,13 @@ export function useMoods() {
   return useQuery({
     queryKey: [API_BASE],
     queryFn: async () => {
-      // For now, if the API 404s, we'll return an empty array to prevent app crash
-      // during "lite" development if backend isn't ready.
-      try {
-        const res = await fetch(API_BASE, { credentials: "include" });
-        if (!res.ok) {
-          if (res.status === 404) return [];
-          throw new Error("Failed to fetch moods");
-        }
-        const data = await res.json();
-        return z.array(moodSchema).parse(data);
-      } catch (err) {
-        console.warn("Using empty moods list (Backend might be missing)", err);
-        return []; 
-      }
+      const res = await fetch(API_BASE, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch moods");
+      return z.array(moodSchema.extend({
+        mood: z.number(),
+        emotion: z.string().optional(),
+        note: z.string().optional(),
+      })).parse(await res.json());
     },
   });
 }
@@ -54,7 +47,7 @@ export function useCreateMood() {
         credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to create mood entry");
-      return moodSchema.parse(await res.json());
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [API_BASE] });
