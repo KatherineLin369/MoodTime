@@ -13,7 +13,7 @@ export default function Landing() {
     <div className="min-h-screen bg-gradient-to-br from-accent/20 via-white to-secondary/20 flex flex-col">
       <nav className="p-6 flex justify-between items-center max-w-7xl mx-auto w-full">
         <div className="flex items-center gap-2">
-          <img src={circleLogo} alt="Logo" className="w-10 h-10 object-contain" />
+          <img src={circleLogo} alt="Logo" className="w-10 h-10 object-contain rounded-full mix-blend-multiply" />
           <span className="text-2xl font-bold font-display text-slate-800">MoodTime</span>
         </div>
         <Button onClick={handleLogin} variant="outline" className="rounded-full px-6 border-primary/20 text-primary hover:bg-primary/5">
@@ -39,12 +39,14 @@ export default function Landing() {
             className="flex justify-center mb-8 relative"
           >
             {/* Blended Logo with Glow */}
-            <div className="absolute inset-0 bg-primary/20 rounded-full blur-[100px] animate-pulse" />
-            <img 
-              src={moodTimeDesign} 
-              alt="MoodTime" 
-              className="h-64 object-contain drop-shadow-[0_0_35px_rgba(255,255,255,0.8)] relative z-10 mix-blend-multiply" 
-            />
+            <div className="absolute inset-0 bg-primary/30 rounded-full blur-[120px] animate-pulse" />
+            <div className="relative z-10 p-4 rounded-[4rem] bg-white/10 backdrop-blur-sm border border-white/20 shadow-2xl">
+              <img 
+                src={moodTimeDesign} 
+                alt="MoodTime" 
+                className="h-64 object-contain mix-blend-multiply" 
+              />
+            </div>
           </motion.div>
           
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-100 shadow-sm text-sm font-medium text-slate-600 mb-4">
