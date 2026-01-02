@@ -48,16 +48,21 @@ export default function Resources() {
           </div>
           <ul className="space-y-4">
             {[
-              "Understanding Anxiety: Triggers & Coping",
-              "The Power of Mindfulness Meditation",
-              "Building Healthy Sleep Habits",
-              "How to Support a Friend in Crisis"
+              { title: "Understanding Anxiety: Triggers & Coping", url: "https://www.mentalhealth.org.uk/explore-mental-health/a-z-topics/anxiety" },
+              { title: "The Power of Mindfulness Meditation", url: "https://www.mindful.org/meditation/mindfulness-getting-started/" },
+              { title: "Building Healthy Sleep Habits", url: "https://www.sleepfoundation.org/sleep-hygiene" },
+              { title: "How to Support a Friend in Crisis", url: "https://www.nami.org/Your-Journey/Family-Members-and-Caregivers/Supporting-a-Friend-or-Family-Member" }
             ].map((article, i) => (
               <li key={i} className="group cursor-pointer">
-                <div className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <span className="text-slate-600 font-medium group-hover:text-primary transition-colors">{article}</span>
+                <a 
+                  href={article.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-colors"
+                >
+                  <span className="text-slate-600 font-medium group-hover:text-primary transition-colors">{article.title}</span>
                   <Globe className="w-4 h-4 text-slate-300" />
-                </div>
+                </a>
               </li>
             ))}
           </ul>
@@ -66,21 +71,21 @@ export default function Resources() {
         {/* Self-Care Tips */}
         <div className="glass-card p-6 rounded-3xl">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-accent/20 text-accent-foreground rounded-full flex items-center justify-center">
               <Heart className="w-5 h-5" />
             </div>
             <h3 className="text-lg font-bold text-slate-800">Daily Self-Care</h3>
           </div>
           <div className="space-y-4">
             {[
-              "Drink a glass of water right now",
-              "Take 3 deep breaths (4-7-8 technique)",
-              "Step outside for fresh air",
-              "List 3 things you are grateful for"
-            ].map((tip, i) => (
-              <div key={i} className="flex gap-3 p-3 bg-purple-50/50 rounded-xl border border-purple-100/50">
-                <div className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-2 shrink-0" />
-                <span className="text-slate-600 text-sm leading-relaxed">{tip}</span>
+              { tip: "Drink a glass of water right now", color: "bg-accent/10 border-accent/20", dot: "bg-accent" },
+              { tip: "Take 3 deep breaths (4-7-8 technique)", color: "bg-secondary/10 border-secondary/20", dot: "bg-secondary" },
+              { tip: "Step outside for fresh air", color: "bg-accent/10 border-accent/20", dot: "bg-accent" },
+              { tip: "List 3 things you are grateful for", color: "bg-secondary/10 border-secondary/20", dot: "bg-secondary" }
+            ].map((item, i) => (
+              <div key={i} className={`flex gap-3 p-3 rounded-xl border ${item.color}`}>
+                <div className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${item.dot}`} />
+                <span className="text-slate-600 text-sm leading-relaxed font-medium">{item.tip}</span>
               </div>
             ))}
           </div>

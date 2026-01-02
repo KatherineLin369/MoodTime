@@ -61,6 +61,42 @@ export function useCreateConversation() {
   });
 }
 
+export function useUpdateConversation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, title }: { id: number; title: string }) => {
+      const res = await fetch(`/api/conversations/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title }),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to update conversation");
+      return conversationSchema.parse(await res.json());
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations", variables.id] });
+    },
+  });
+}
+
+export function useDeleteConversation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const res = await fetch(`/api/conversations/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to delete conversation");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
+    },
+  });
+}
+
 // NOTE: Sending messages is usually handled via streaming/SSE in the component,
 // but here is a mutation for the initial setup if needed.
 // The actual message sending logic for chat often uses direct fetch/EventSource.

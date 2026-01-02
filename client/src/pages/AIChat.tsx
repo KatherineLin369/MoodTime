@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/use-auth";
-import { useConversations, useCreateConversation, useConversation } from "@/hooks/use-chat";
+import { useConversations, useCreateConversation, useConversation, useUpdateConversation, useDeleteConversation } from "@/hooks/use-chat";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Bot, User, Plus, MessageSquare, Loader2 } from "lucide-react";
+import { Send, Bot, User, Plus, MessageSquare, Loader2, Edit2, Trash2, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -13,8 +13,12 @@ export default function AIChat() {
   const { user } = useAuth();
   const { data: conversations, isLoading: loadingConvos } = useConversations();
   const { mutate: createConvo, isPending: creatingConvo } = useCreateConversation();
+  const { mutate: updateConvo } = useUpdateConversation();
+  const { mutate: deleteConvo } = useDeleteConversation();
   
   const [activeId, setActiveId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState("");
   const [input, setInput] = useState("");
   const [streamingContent, setStreamingContent] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -118,19 +122,88 @@ export default function AIChat() {
               <div className="p-4 text-center text-slate-400 text-sm">No sessions yet. Start a new chat!</div>
             ) : (
               conversations?.map(convo => (
-                <button
-                  key={convo.id}
-                  onClick={() => setActiveId(convo.id)}
-                  className={cn(
-                    "w-full text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center gap-3",
-                    activeId === convo.id 
-                      ? "bg-primary/10 text-primary font-medium" 
-                      : "hover:bg-slate-50 text-slate-600"
+                <div key={convo.id} className="group relative">
+                  {editingId === convo.id ? (
+                    <div className="flex items-center gap-1 p-2 bg-slate-50 rounded-xl mx-2">
+                      <Input
+                        value={editTitle}
+                        onChange={(e) => setEditTitle(e.target.value)}
+                        className="h-8 text-xs"
+                        autoFocus
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            updateConvo({ id: convo.id, title: editTitle });
+                            setEditingId(null);
+                          } else if (e.key === 'Escape') {
+                            setEditingId(null);
+                          }
+                        }}
+                      />
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6 shrink-0"
+                        onClick={() => {
+                          updateConvo({ id: convo.id, title: editTitle });
+                          setEditingId(null);
+                        }}
+                      >
+                        <Check className="w-3 h-3 text-green-600" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-6 w-6 shrink-0"
+                        onClick={() => setEditingId(null)}
+                      >
+                        <X className="w-3 h-3 text-red-600" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center px-2">
+                      <button
+                        onClick={() => setActiveId(convo.id)}
+                        className={cn(
+                          "flex-1 text-left px-4 py-3 rounded-xl text-sm transition-all flex items-center gap-3",
+                          activeId === convo.id 
+                            ? "bg-primary/10 text-primary font-medium" 
+                            : "hover:bg-slate-50 text-slate-600"
+                        )}
+                      >
+                        <MessageSquare className="w-4 h-4 shrink-0 opacity-70" />
+                        <span className="truncate">{convo.title || "New Chat"}</span>
+                      </button>
+                      <div className="absolute right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingId(convo.id);
+                            setEditTitle(convo.title);
+                          }}
+                        >
+                          <Edit2 className="w-3 h-3" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm("Are you sure you want to delete this session?")) {
+                              deleteConvo(convo.id);
+                              if (activeId === convo.id) setActiveId(null);
+                            }
+                          }}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
                   )}
-                >
-                  <MessageSquare className="w-4 h-4 shrink-0 opacity-70" />
-                  <span className="truncate">{convo.title || "New Chat"}</span>
-                </button>
+                </div>
               ))
             )}
           </div>

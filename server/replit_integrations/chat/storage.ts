@@ -39,5 +39,14 @@ export const chatStorage: IChatStorage = {
     const [message] = await db.insert(messages).values({ conversationId, role, content }).returning();
     return message;
   },
+
+  async updateConversation(id: number, title: string) {
+    const [conversation] = await db
+      .update(conversations)
+      .set({ title })
+      .where(eq(conversations.id, id))
+      .returning();
+    return conversation;
+  },
 };
 
