@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Gamepad2, Grid, Wind, Music, Play, Pause, RotateCcw } from "lucide-react";
+import { Gamepad2, Grid, Wind, Music, Play, Pause, RotateCcw, Heart, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 
 const GAMES = [
   {
@@ -20,11 +21,18 @@ const GAMES = [
     color: "bg-yellow-100 text-yellow-600", // Changed to yellow as requested
   },
   {
-    id: "sounds",
-    title: "Nature Sounds",
-    description: "Mix and match calming ambiance.",
-    icon: Music,
-    color: "bg-green-100 text-green-600",
+    id: "gratitude",
+    title: "Gratitude Journal",
+    description: "Write down three things you're thankful for today.",
+    icon: Heart,
+    color: "bg-rose-100 text-rose-600",
+  },
+  {
+    id: "guided-imagery",
+    title: "Guided Imagery",
+    description: "Visualize your happy place with audio guidance.",
+    icon: Globe,
+    color: "bg-indigo-100 text-indigo-600",
   }
 ];
 
@@ -76,8 +84,59 @@ export default function Games() {
           {activeGame === "breathing" && <BreathingGame />}
           {activeGame === "block-puzzle" && <ZenBlocks />}
           {activeGame === "sounds" && <SoundScape />}
+          {activeGame === "gratitude" && <GratitudeGame />}
+          {activeGame === "guided-imagery" && <GuidedImagery />}
         </motion.div>
       )}
+    </div>
+  );
+}
+
+function GratitudeGame() {
+  const [entries, setEntries] = useState(["", "", ""]);
+  const [isSaved, setIsSaved] = useState(false);
+
+  return (
+    <div className="space-y-8 w-full max-w-md">
+      <h2 className="text-2xl font-bold text-slate-800">What are you grateful for?</h2>
+      <div className="space-y-4">
+        {entries.map((e, i) => (
+          <Input
+            key={i}
+            placeholder={`I am grateful for...`}
+            value={e}
+            onChange={(val) => {
+              const next = [...entries];
+              next[i] = val.target.value;
+              setEntries(next);
+            }}
+            className="rounded-xl border-rose-100 focus-visible:ring-rose-200"
+          />
+        ))}
+      </div>
+      <Button 
+        className="w-full rounded-xl bg-rose-500 hover:bg-rose-600"
+        onClick={() => setIsSaved(true)}
+      >
+        {isSaved ? "Saved to Heart" : "Record Gratitude"}
+      </Button>
+    </div>
+  );
+}
+
+function GuidedImagery() {
+  return (
+    <div className="space-y-8">
+      <div className="w-32 h-32 bg-indigo-100 rounded-full flex items-center justify-center mx-auto">
+        <Globe className="w-16 h-16 text-indigo-600 animate-pulse" />
+      </div>
+      <div className="space-y-2">
+        <h2 className="text-2xl font-bold text-slate-800">Mountain Retreat</h2>
+        <p className="text-slate-500">Close your eyes and listen to the stream.</p>
+      </div>
+      <Button className="rounded-full bg-indigo-600 hover:bg-indigo-700 gap-2">
+        <Play className="w-4 h-4" /> Start Meditation
+      </Button>
     </div>
   );
 }
@@ -159,11 +218,19 @@ function ZenBlocks() {
 function SoundScape() {
   const [isPlaying, setIsPlaying] = useState<string | null>(null);
   const sounds = [
-    { name: "Rainforest", icon: "🌧️" },
-    { name: "Ocean Waves", icon: "🌊" },
-    { name: "Summer Night", icon: "🌙" },
-    { name: "Soft Wind", icon: "🍃" }
+    { name: "Rainforest", icon: "🌧️", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+    { name: "Ocean Waves", icon: "🌊", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+    { name: "Summer Night", icon: "🌙", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+    { name: "Soft Wind", icon: "🍃", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
   ];
+
+  const toggleSound = (name: string) => {
+    if (isPlaying === name) {
+      setIsPlaying(null);
+    } else {
+      setIsPlaying(name);
+    }
+  };
 
   return (
     <div className="space-y-8 w-full max-w-md">
@@ -171,7 +238,7 @@ function SoundScape() {
         {sounds.map((s) => (
           <button
             key={s.name}
-            onClick={() => setIsPlaying(isPlaying === s.name ? null : s.name)}
+            onClick={() => toggleSound(s.name)}
             className={`p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${
               isPlaying === s.name ? "bg-green-50 border-green-500 text-green-700" : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
             }`}
@@ -187,6 +254,7 @@ function SoundScape() {
             <Music className="animate-bounce" />
             <span className="font-medium italic">Now playing: {isPlaying}</span>
           </div>
+          <audio autoPlay loop src={sounds.find(s => s.name === isPlaying)?.url} className="hidden" />
           <Slider defaultValue={[50]} max={100} step={1} className="w-48" />
         </motion.div>
       )}

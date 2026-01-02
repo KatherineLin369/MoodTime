@@ -71,17 +71,17 @@ export default function Resources() {
         {/* Self-Care Tips */}
         <div className="glass-card p-6 rounded-3xl">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-accent/20 text-accent-foreground rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
               <Heart className="w-5 h-5" />
             </div>
             <h3 className="text-lg font-bold text-slate-800">Daily Self-Care</h3>
           </div>
           <div className="space-y-4">
             {[
-              { tip: "Drink a glass of water right now", color: "bg-accent/10 border-accent/20", dot: "bg-accent" },
-              { tip: "Take 3 deep breaths (4-7-8 technique)", color: "bg-secondary/10 border-secondary/20", dot: "bg-secondary" },
-              { tip: "Step outside for fresh air", color: "bg-accent/10 border-accent/20", dot: "bg-accent" },
-              { tip: "List 3 things you are grateful for", color: "bg-secondary/10 border-secondary/20", dot: "bg-secondary" }
+              { tip: "Drink a glass of water right now", color: "bg-green-50 border-green-100", dot: "bg-green-400" },
+              { tip: "Take 3 deep breaths (4-7-8 technique)", color: "bg-yellow-50 border-yellow-100", dot: "bg-yellow-400" },
+              { tip: "Step outside for fresh air", color: "bg-green-50 border-green-100", dot: "bg-green-400" },
+              { tip: "List 3 things you are grateful for", color: "bg-yellow-50 border-yellow-100", dot: "bg-yellow-400" }
             ].map((item, i) => (
               <div key={i} className={`flex gap-3 p-3 rounded-xl border ${item.color}`}>
                 <div className={`w-1.5 h-1.5 rounded-full mt-2 shrink-0 ${item.dot}`} />
