@@ -32,7 +32,7 @@ export function Sidebar() {
   return (
     <div className="hidden md:flex flex-col w-64 h-screen bg-white border-r border-border fixed left-0 top-0 z-20 shadow-sm">
       <div className="p-8 flex items-center gap-3">
-        <img src={circleLogo} alt="Logo" className="w-10 h-10 object-contain" />
+        <img src={circleLogo} alt="Logo" className="w-10 h-10 object-contain rounded-full mix-blend-multiply" />
         <span className="text-2xl font-bold font-display text-slate-800 tracking-tight">MoodTime</span>
       </div>
 
