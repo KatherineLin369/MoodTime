@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Gamepad2, Grid, Wind, Music, Play, Pause, RotateCcw, Heart, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -125,18 +125,91 @@ function GratitudeGame() {
 }
 
 function GuidedImagery() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isPlaying && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      setIsPlaying(false);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying, timeLeft]);
+
+  const togglePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
+
   return (
     <div className="space-y-8">
       <div className="w-32 h-32 bg-indigo-100 rounded-full flex items-center justify-center mx-auto">
-        <Globe className="w-16 h-16 text-indigo-600 animate-pulse" />
+        <motion.div
+          animate={isPlaying ? { scale: [1, 1.1, 1] } : {}}
+          transition={{ duration: 4, repeat: Infinity }}
+        >
+          <Globe className="w-16 h-16 text-indigo-600" />
+        </motion.div>
       </div>
       <div className="space-y-2">
         <h2 className="text-2xl font-bold text-slate-800">Mountain Retreat</h2>
         <p className="text-slate-500">Close your eyes and listen to the stream.</p>
+        <div className="text-3xl font-mono font-bold text-indigo-600 mt-4">
+          {formatTime(timeLeft)}
+        </div>
       </div>
-      <Button className="rounded-full bg-indigo-600 hover:bg-indigo-700 gap-2">
-        <Play className="w-4 h-4" /> Start Meditation
-      </Button>
+      <div className="flex justify-center gap-4">
+        <audio
+          ref={audioRef}
+          src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
+          loop
+        />
+        <Button
+          onClick={togglePlay}
+          className="rounded-full bg-indigo-600 hover:bg-indigo-700 gap-2 h-12 px-8"
+        >
+          {isPlaying ? (
+            <>
+              <Pause className="w-5 h-5" /> Pause Meditation
+            </>
+          ) : (
+            <>
+              <Play className="w-5 h-5" /> Start Meditation
+            </>
+          )}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setIsPlaying(false);
+            setTimeLeft(300);
+            if (audioRef.current) {
+              audioRef.current.pause();
+              audioRef.current.currentTime = 0;
+            }
+          }}
+          className="rounded-full h-12 w-12 p-0 border-indigo-200 text-indigo-600"
+        >
+          <RotateCcw className="w-5 h-5" />
+        </Button>
+      </div>
     </div>
   );
 }
