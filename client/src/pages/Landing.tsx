@@ -1,6 +1,6 @@
 import circleLogo from "@assets/IMG_1476_1766455685060.jpeg";
 import { Button } from "@/components/ui/button";
-import { Shield, HeartHandshake, Sparkles } from "lucide-react";
+import { Shield, HeartHandshake, Sparkles, Smile } from "lucide-react";
 import { motion } from "framer-motion";
 import moodTimeDesign from "@assets/IMG_1475_1766455685060.jpeg";
 
