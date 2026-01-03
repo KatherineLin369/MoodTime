@@ -92,34 +92,93 @@ export default function Games() {
   );
 }
 
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
 function GratitudeGame() {
   const [entries, setEntries] = useState(["", "", ""]);
   const [isSaved, setIsSaved] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data: history } = useQuery({
+    queryKey: ["/api/gratitude"],
+    queryFn: async () => {
+      const res = await fetch("/api/gratitude");
+      if (!res.ok) throw new Error("Failed to fetch gratitude history");
+      return res.json();
+    }
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async (content: string[]) => {
+      const res = await fetch("/api/gratitude", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+      if (!res.ok) throw new Error("Failed to save");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/gratitude"] });
+      setIsSaved(true);
+      setEntries(["", "", ""]);
+      setTimeout(() => setIsSaved(false), 3000);
+    }
+  });
 
   return (
-    <div className="space-y-8 w-full max-w-md">
-      <h2 className="text-2xl font-bold text-slate-800">What are you grateful for?</h2>
-      <div className="space-y-4">
-        {entries.map((e, i) => (
-          <Input
-            key={i}
-            placeholder={`I am grateful for...`}
-            value={e}
-            onChange={(val) => {
-              const next = [...entries];
-              next[i] = val.target.value;
-              setEntries(next);
-            }}
-            className="rounded-xl border-rose-100 focus-visible:ring-rose-200"
-          />
-        ))}
+    <div className="space-y-8 w-full max-w-2xl mx-auto">
+      <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-xl">
+        <h2 className="text-2xl font-bold text-slate-800 mb-6">What are you grateful for?</h2>
+        <div className="space-y-4">
+          {entries.map((e, i) => (
+            <Input
+              key={i}
+              placeholder={`I am grateful for...`}
+              value={e}
+              onChange={(val) => {
+                const next = [...entries];
+                next[i] = val.target.value;
+                setEntries(next);
+              }}
+              className="rounded-xl border-rose-100 focus-visible:ring-rose-200"
+            />
+          ))}
+        </div>
+        <Button 
+          className="w-full mt-6 rounded-xl bg-rose-500 hover:bg-rose-600 h-12 text-lg font-bold"
+          onClick={() => saveMutation.mutate(entries.filter(e => e.trim()))}
+          disabled={saveMutation.isPending || !entries.some(e => e.trim())}
+        >
+          {saveMutation.isPending ? "Saving..." : isSaved ? "Saved to Heart" : "Record Gratitude"}
+        </Button>
       </div>
-      <Button 
-        className="w-full rounded-xl bg-rose-500 hover:bg-rose-600"
-        onClick={() => setIsSaved(true)}
-      >
-        {isSaved ? "Saved to Heart" : "Record Gratitude"}
-      </Button>
+
+      {history && history.length > 0 && (
+        <div className="space-y-4 text-left">
+          <h3 className="text-lg font-bold text-slate-700 flex items-center gap-2 px-2">
+            <Heart className="w-5 h-5 text-rose-400" />
+            Previous Reflections
+          </h3>
+          <div className="grid gap-4">
+            {history.map((entry: any) => (
+              <div key={entry.id} className="bg-rose-50/30 p-4 rounded-2xl border border-rose-100">
+                <div className="text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-2">
+                  {format(new Date(entry.createdAt), "MMMM d, yyyy")}
+                </div>
+                <ul className="space-y-1">
+                  {entry.content.map((item: string, idx: number) => (
+                    <li key={idx} className="text-slate-600 text-sm flex gap-2">
+                      <span className="text-rose-300">•</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
