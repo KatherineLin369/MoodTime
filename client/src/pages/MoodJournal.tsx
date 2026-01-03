@@ -75,8 +75,8 @@ export default function MoodJournal() {
     );
   }
 
-  // Transform data for chart
-  const chartData = moods?.slice(-7).map(m => ({
+  // Transform data for chart (reverse to show chronological order)
+  const chartData = moods?.slice(0, 7).reverse().map(m => ({
     date: format(new Date(m.createdAt), "EEE"),
     value: m.mood
   })) || [];
