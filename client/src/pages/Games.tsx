@@ -19,21 +19,35 @@ const GAMES = [
     title: "Zen Blocks",
     description: "Tap to cycle colors. Find your perfect pattern.",
     icon: Grid,
-    color: "bg-yellow-100 text-yellow-600", // Changed to yellow as requested
+    color: "bg-yellow-100 text-yellow-600",
   },
   {
     id: "gratitude",
     title: "Gratitude Journal",
     description: "Write down three things you're thankful for today.",
     icon: Heart,
-    color: "bg-rose-100 text-rose-600",
+    color: "bg-green-100 text-green-600",
   },
   {
     id: "guided-imagery",
     title: "Guided Imagery",
     description: "Visualize your happy place with audio guidance.",
     icon: Globe,
-    color: "bg-indigo-100 text-indigo-600",
+    color: "bg-blue-100 text-blue-600",
+  },
+  {
+    id: "sounds",
+    title: "Nature Sounds",
+    description: "Ambient sounds to help you relax or sleep.",
+    icon: Music,
+    color: "bg-yellow-100 text-yellow-600",
+  },
+  {
+    id: "affirmations",
+    title: "Affirmations",
+    description: "Positive thoughts to boost your mood.",
+    icon: Heart,
+    color: "bg-green-100 text-green-600",
   }
 ];
 
@@ -87,6 +101,7 @@ export default function Games() {
           {activeGame === "sounds" && <SoundScape />}
           {activeGame === "gratitude" && <GratitudeGame />}
           {activeGame === "guided-imagery" && <GuidedImagery />}
+          {activeGame === "affirmations" && <AffirmationsGame />}
         </motion.div>
       )}
     </div>
@@ -142,12 +157,12 @@ function GratitudeGame() {
                 next[i] = val.target.value;
                 setEntries(next);
               }}
-              className="rounded-xl border-rose-100 focus-visible:ring-rose-200"
+              className="rounded-xl border-green-100 focus-visible:ring-green-200"
             />
           ))}
         </div>
         <Button 
-          className="w-full mt-6 rounded-xl bg-rose-500 hover:bg-rose-600 h-12 text-lg font-bold"
+          className="w-full mt-6 rounded-xl bg-green-500 hover:bg-green-600 h-12 text-lg font-bold"
           onClick={() => saveMutation.mutate(entries.filter(e => e.trim()))}
           disabled={saveMutation.isPending || !entries.some(e => e.trim())}
         >
@@ -158,19 +173,19 @@ function GratitudeGame() {
       {history && history.length > 0 && (
         <div className="space-y-4 text-left">
           <h3 className="text-lg font-bold text-slate-700 flex items-center gap-2 px-2">
-            <Heart className="w-5 h-5 text-rose-400" />
+            <Heart className="w-5 h-5 text-green-400" />
             Previous Reflections
           </h3>
           <div className="grid gap-4">
             {history.map((entry: any) => (
-              <div key={entry.id} className="bg-rose-50/30 p-4 rounded-2xl border border-rose-100">
-                <div className="text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-2">
+              <div key={entry.id} className="bg-green-50/30 p-4 rounded-2xl border border-green-100">
+                <div className="text-[10px] font-bold text-green-400 uppercase tracking-widest mb-2">
                   {format(new Date(entry.createdAt), "MMMM d, yyyy")}
                 </div>
                 <ul className="space-y-1">
                   {entry.content.map((item: string, idx: number) => (
                     <li key={idx} className="text-slate-600 text-sm flex gap-2">
-                      <span className="text-rose-300">•</span>
+                      <span className="text-green-300">•</span>
                       {item}
                     </li>
                   ))}
@@ -180,6 +195,41 @@ function GratitudeGame() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function AffirmationsGame() {
+  const AFFIRMATIONS = [
+    "I am capable of handling whatever comes my way.",
+    "I deserve to feel happy and at peace.",
+    "My feelings are valid and I am learning from them.",
+    "I am doing my best, and that is enough.",
+    "I am surrounded by support and love.",
+    "I choose to focus on what I can control.",
+    "Today is a new opportunity to grow."
+  ];
+  const [index, setIndex] = useState(0);
+
+  return (
+    <div className="space-y-12 w-full max-w-lg">
+      <motion.div
+        key={index}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-green-50/50 p-12 rounded-[2rem] border-2 border-green-100 text-center"
+      >
+        <Heart className="w-12 h-12 text-green-500 mx-auto mb-6" />
+        <p className="text-2xl font-bold text-slate-800 leading-relaxed italic">
+          "{AFFIRMATIONS[index]}"
+        </p>
+      </motion.div>
+      <Button 
+        onClick={() => setIndex((index + 1) % AFFIRMATIONS.length)}
+        className="rounded-full bg-green-500 hover:bg-green-600 h-14 px-10 text-lg font-bold"
+      >
+        Next Affirmation
+      </Button>
     </div>
   );
 }
@@ -220,18 +270,18 @@ function GuidedImagery() {
 
   return (
     <div className="space-y-8">
-      <div className="w-32 h-32 bg-indigo-100 rounded-full flex items-center justify-center mx-auto">
+      <div className="w-32 h-32 bg-blue-50 rounded-full flex items-center justify-center mx-auto">
         <motion.div
           animate={isPlaying ? { scale: [1, 1.1, 1] } : {}}
           transition={{ duration: 4, repeat: Infinity }}
         >
-          <Globe className="w-16 h-16 text-indigo-600" />
+          <Globe className="w-16 h-16 text-blue-600" />
         </motion.div>
       </div>
       <div className="space-y-2">
         <h2 className="text-2xl font-bold text-slate-800">Mountain Retreat</h2>
         <p className="text-slate-500">Close your eyes and listen to the stream.</p>
-        <div className="text-3xl font-mono font-bold text-indigo-600 mt-4">
+        <div className="text-3xl font-mono font-bold text-blue-600 mt-4">
           {formatTime(timeLeft)}
         </div>
       </div>
@@ -243,7 +293,7 @@ function GuidedImagery() {
         />
         <Button
           onClick={togglePlay}
-          className="rounded-full bg-indigo-600 hover:bg-indigo-700 gap-2 h-12 px-8"
+          className="rounded-full bg-blue-600 hover:bg-blue-700 gap-2 h-12 px-8"
         >
           {isPlaying ? (
             <>
@@ -265,7 +315,7 @@ function GuidedImagery() {
               audioRef.current.currentTime = 0;
             }
           }}
-          className="rounded-full h-12 w-12 p-0 border-indigo-200 text-indigo-600"
+          className="rounded-full h-12 w-12 p-0 border-blue-200 text-blue-600"
         >
           <RotateCcw className="w-5 h-5" />
         </Button>
