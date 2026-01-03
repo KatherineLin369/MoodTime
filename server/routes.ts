@@ -23,29 +23,40 @@ export async function registerRoutes(
   // 3. Application Routes
   
   // Mood Entries - Protected
-  app.get(api.moods.list.path, isAuthenticated, async (req: any, res) => {
+  app.get("/api/moods", isAuthenticated, async (req: any, res) => {
     const userId = req.user.claims.sub;
     const moods = await storage.getMoodEntries(userId);
     res.json(moods);
   });
 
-  app.post(api.moods.create.path, isAuthenticated, async (req: any, res) => {
+  app.post("/api/moods", isAuthenticated, async (req: any, res) => {
     try {
-      const input = api.moods.create.input.parse(req.body);
-      // Force userId from auth
       const mood = await storage.createMoodEntry({
-        ...input,
+        ...req.body,
         userId: req.user.claims.sub
       });
       res.status(201).json(mood);
     } catch (err) {
-      if (err instanceof z.ZodError) {
-        return res.status(400).json({
-          message: err.errors[0].message,
-          field: err.errors[0].path.join('.'),
-        });
-      }
-      throw err;
+      res.status(500).json({ message: "Failed to create mood" });
+    }
+  });
+
+  // Gratitude Entries - Protected
+  app.get("/api/gratitude", isAuthenticated, async (req: any, res) => {
+    const userId = req.user.claims.sub;
+    const entries = await storage.getGratitudeEntries(userId);
+    res.json(entries);
+  });
+
+  app.post("/api/gratitude", isAuthenticated, async (req: any, res) => {
+    try {
+      const entry = await storage.createGratitudeEntry({
+        ...req.body,
+        userId: req.user.claims.sub
+      });
+      res.status(201).json(entry);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to create gratitude entry" });
     }
   });
 
