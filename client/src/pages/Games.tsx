@@ -240,10 +240,10 @@ function SoundScape() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const SOUNDS = [
-    { id: "rain", title: "Gentle Rain", icon: CloudRain, url: "https://www.soundjay.com/nature/rain-01.mp3" },
-    { id: "waves", title: "Ocean Waves", icon: Waves, url: "https://www.soundjay.com/nature/ocean-wave-1.mp3" },
-    { id: "forest", title: "Forest Birds", icon: Trees, url: "https://www.soundjay.com/nature/forest-birds-01.mp3" },
-    { id: "wind", title: "Soft Wind", icon: Wind, url: "https://www.soundjay.com/nature/wind-01.mp3" }
+    { id: "rain", title: "Gentle Rain", icon: CloudRain, url: "https://assets.mixkit.co/active_storage/sfx/2437/2437-preview.mp3" },
+    { id: "waves", title: "Ocean Waves", icon: Waves, url: "https://assets.mixkit.co/active_storage/sfx/1113/1113-preview.mp3" },
+    { id: "forest", title: "Forest Birds", icon: Trees, url: "https://assets.mixkit.co/active_storage/sfx/1118/1118-preview.mp3" },
+    { id: "wind", title: "Soft Wind", icon: Wind, url: "https://assets.mixkit.co/active_storage/sfx/1116/1116-preview.mp3" }
   ];
 
   const toggleSound = (sound: any) => {
@@ -376,7 +376,7 @@ function GuidedImagery() {
       <div className="flex justify-center gap-4">
         <audio
           ref={audioRef}
-          src="https://www.soundjay.com/nature/river-1.mp3"
+          src="https://assets.mixkit.co/active_storage/sfx/1113/1113-preview.mp3"
           loop
         />
         <Button
