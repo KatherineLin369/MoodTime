@@ -248,12 +248,17 @@ function SoundScape() {
 
   const toggleSound = (sound: any) => {
     if (activeSound === sound.id) {
-      audioRef.current?.pause();
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
       setActiveSound(null);
     } else {
       if (audioRef.current) {
         audioRef.current.src = sound.url;
-        audioRef.current.play();
+        audioRef.current.load(); // Ensure the new source is loaded
+        audioRef.current.play().catch(error => {
+          console.error("Audio play failed:", error);
+        });
       }
       setActiveSound(sound.id);
     }
