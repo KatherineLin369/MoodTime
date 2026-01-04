@@ -223,34 +223,43 @@ export default function MoodJournal() {
             </h3>
             <div className="space-y-4">
               {moods?.map(mood => (
-                <div key={mood.id} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex gap-4">
+                <div key={mood.id} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex gap-4 hover-elevate transition-all">
                   <div className="text-2xl pt-1">
                     {mood.mood === 5 ? '🤩' : mood.mood === 4 ? '🙂' : mood.mood === 3 ? '😐' : mood.mood === 2 ? '😕' : '😢'}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-semibold text-slate-700">
-                        {format(new Date(mood.createdAt), "MMMM d, h:mm a")}
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        {format(new Date(mood.createdAt), "MMM d, yyyy")}
+                      </span>
+                      <span className="text-[10px] font-medium text-slate-400">
+                        {format(new Date(mood.createdAt), "h:mm a")}
                       </span>
                     </div>
                     {mood.emotion && (
                       <div className="flex flex-wrap gap-1 mb-2">
                         {mood.emotion.split(", ").map(e => (
-                          <span key={e} className="text-[10px] px-2 py-0.5 bg-slate-50 text-slate-500 rounded-full border border-slate-100">
+                          <span key={e} className="text-[10px] px-2 py-0.5 bg-primary/5 text-primary rounded-full border border-primary/10 font-medium">
                             {e}
                           </span>
                         ))}
                       </div>
                     )}
                     {mood.note && (
-                      <p className="text-sm text-slate-500">{mood.note}</p>
+                      <p className="text-sm text-slate-600 leading-relaxed bg-slate-50/50 p-2 rounded-lg border border-slate-100/50 italic">
+                        "{mood.note}"
+                      </p>
                     )}
                   </div>
                 </div>
               ))}
               {(!moods || moods.length === 0) && (
-                <div className="text-center py-8 text-slate-400 text-sm">
-                  No entries yet.
+                <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-3xl">
+                  <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <CalendarIcon className="w-6 h-6 text-slate-400" />
+                  </div>
+                  <p className="text-sm text-slate-400 font-medium">No mood entries yet.</p>
+                  <p className="text-xs text-slate-300 mt-1">Start by logging how you feel today!</p>
                 </div>
               )}
             </div>
