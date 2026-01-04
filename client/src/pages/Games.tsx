@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { Gamepad2, Grid, Wind, Music, Play, Pause, RotateCcw, Heart, Globe } from "lucide-react";
+import { Gamepad2, Grid, Wind, Music, Play, Pause, RotateCcw, Heart, Globe, CloudRain, Waves, Trees } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const GAMES = [
   {
@@ -234,6 +235,64 @@ function AffirmationsGame() {
   );
 }
 
+function SoundScape() {
+  const [activeSound, setActiveSound] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const SOUNDS = [
+    { id: "rain", title: "Gentle Rain", icon: CloudRain, url: "https://www.soundjay.com/nature/rain-01.mp3" },
+    { id: "waves", title: "Ocean Waves", icon: Waves, url: "https://www.soundjay.com/nature/ocean-wave-1.mp3" },
+    { id: "forest", title: "Forest Birds", icon: Trees, url: "https://www.soundjay.com/nature/forest-birds-01.mp3" },
+    { id: "wind", title: "Soft Wind", icon: Wind, url: "https://www.soundjay.com/nature/wind-01.mp3" }
+  ];
+
+  const toggleSound = (sound: any) => {
+    if (activeSound === sound.id) {
+      audioRef.current?.pause();
+      setActiveSound(null);
+    } else {
+      if (audioRef.current) {
+        audioRef.current.src = sound.url;
+        audioRef.current.play();
+      }
+      setActiveSound(sound.id);
+    }
+  };
+
+  return (
+    <div className="space-y-8 w-full max-w-md">
+      <audio ref={audioRef} loop />
+      <div className="grid grid-cols-2 gap-4">
+        {SOUNDS.map((sound) => (
+          <button
+            key={sound.id}
+            onClick={() => toggleSound(sound)}
+            className={`p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${
+              activeSound === sound.id 
+                ? "bg-green-50 border-green-500 text-green-700 shadow-inner" 
+                : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
+            }`}
+          >
+            <sound.icon className={cn("w-8 h-8", activeSound === sound.id ? "text-green-600" : "text-slate-400")} />
+            <span className="font-semibold text-sm">{sound.title}</span>
+          </button>
+        ))}
+      </div>
+      {activeSound && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-4">
+          <div className="flex items-center gap-4 text-green-600">
+            <Music className="animate-bounce" />
+            <span className="font-medium italic">Now playing: {SOUNDS.find(s => s.id === activeSound)?.title}</span>
+          </div>
+          <Slider defaultValue={[50]} max={100} step={1} className="w-48" onValueChange={(val) => {
+            if (audioRef.current) audioRef.current.volume = val[0] / 100;
+          }} />
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 function GuidedImagery() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
@@ -288,7 +347,7 @@ function GuidedImagery() {
       <div className="flex justify-center gap-4">
         <audio
           ref={audioRef}
-          src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
+          src="https://www.soundjay.com/nature/river-1.mp3"
           loop
         />
         <Button
@@ -394,53 +453,6 @@ function ZenBlocks() {
         <h2 className="text-2xl font-bold text-slate-800">Find Your Harmony</h2>
         <p className="text-slate-500">Tap blocks to shift shades. There is no wrong way.</p>
       </div>
-    </div>
-  );
-}
-
-function SoundScape() {
-  const [isPlaying, setIsPlaying] = useState<string | null>(null);
-  const sounds = [
-    { name: "Rainforest", icon: "🌧️", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-    { name: "Ocean Waves", icon: "🌊", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-    { name: "Summer Night", icon: "🌙", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-    { name: "Soft Wind", icon: "🍃", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
-  ];
-
-  const toggleSound = (name: string) => {
-    if (isPlaying === name) {
-      setIsPlaying(null);
-    } else {
-      setIsPlaying(name);
-    }
-  };
-
-  return (
-    <div className="space-y-8 w-full max-w-md">
-      <div className="grid grid-cols-2 gap-4">
-        {sounds.map((s) => (
-          <button
-            key={s.name}
-            onClick={() => toggleSound(s.name)}
-            className={`p-6 rounded-2xl border-2 transition-all flex flex-col items-center gap-3 ${
-              isPlaying === s.name ? "bg-green-50 border-green-500 text-green-700" : "bg-white border-slate-100 text-slate-400 hover:border-slate-200"
-            }`}
-          >
-            <span className="text-3xl">{s.icon}</span>
-            <span className="font-semibold text-sm">{s.name}</span>
-          </button>
-        ))}
-      </div>
-      {isPlaying && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-4">
-          <div className="flex items-center gap-4 text-green-600">
-            <Music className="animate-bounce" />
-            <span className="font-medium italic">Now playing: {isPlaying}</span>
-          </div>
-          <audio autoPlay loop src={sounds.find(s => s.name === isPlaying)?.url} className="hidden" />
-          <Slider defaultValue={[50]} max={100} step={1} className="w-48" />
-        </motion.div>
-      )}
     </div>
   );
 }
