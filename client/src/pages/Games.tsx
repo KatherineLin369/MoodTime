@@ -7,6 +7,12 @@ import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
+import rainAudio from "@assets/relaxing-rain-444802_1767543888799.mp3";
+import birdsAudio from "@assets/birds-19624_1767543891450.mp3";
+import windAudio from "@assets/mixkit-wind-blowing-ambience-2658_1767544228057.wav";
+import wavesAudio from "@assets/beach-waves(chosic.com)_1767544374840.mp3";
+import transcendenceAudio from "@assets/Transcendence-chosic.com__1767544498437.mp3";
+
 const GAMES = [
   {
     id: "breathing",
@@ -240,10 +246,10 @@ function SoundScape() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const SOUNDS = [
-    { id: "rain", title: "Gentle Rain", icon: CloudRain, url: "https://assets.mixkit.co/active_storage/sfx/2437/2437-preview.mp3" },
-    { id: "waves", title: "Ocean Waves", icon: Waves, url: "https://assets.mixkit.co/active_storage/sfx/1113/1113-preview.mp3" },
-    { id: "forest", title: "Forest Birds", icon: Trees, url: "https://assets.mixkit.co/active_storage/sfx/1118/1118-preview.mp3" },
-    { id: "wind", title: "Soft Wind", icon: Wind, url: "https://assets.mixkit.co/active_storage/sfx/1116/1116-preview.mp3" }
+    { id: "rain", title: "Gentle Rain", icon: CloudRain, url: rainAudio },
+    { id: "waves", title: "Ocean Waves", icon: Waves, url: wavesAudio },
+    { id: "forest", title: "Forest Birds", icon: Trees, url: birdsAudio },
+    { id: "wind", title: "Soft Wind", icon: Wind, url: windAudio }
   ];
 
   const toggleSound = (sound: any) => {
@@ -256,6 +262,7 @@ function SoundScape() {
       if (audioRef.current) {
         // Stop any current playback
         audioRef.current.pause();
+        audioRef.current.currentTime = 0; // Reset time
         audioRef.current.src = sound.url;
         audioRef.current.load();
         
@@ -264,7 +271,8 @@ function SoundScape() {
         
         const playAudio = async () => {
           try {
-            if (activeSound === currentSoundId || (activeSound === null && currentSoundId)) {
+            // Re-check activeSound before playing
+            if (activeSound === currentSoundId) {
                await audioRef.current?.play();
             }
           } catch (error: any) {
@@ -274,10 +282,11 @@ function SoundScape() {
           }
         };
 
-        // Some browsers need a tiny bit of time after src change
-        setTimeout(playAudio, 50);
+        // Update state first to ensure correct currentSoundId check
+        setActiveSound(sound.id);
+        // Delay slightly for load()
+        setTimeout(playAudio, 100);
       }
-      setActiveSound(sound.id);
     }
   };
 
@@ -376,7 +385,7 @@ function GuidedImagery() {
       <div className="flex justify-center gap-4">
         <audio
           ref={audioRef}
-          src="https://assets.mixkit.co/active_storage/sfx/1113/1113-preview.mp3"
+          src={transcendenceAudio}
           loop
         />
         <Button
