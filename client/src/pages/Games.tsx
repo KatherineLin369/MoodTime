@@ -240,10 +240,10 @@ function SoundScape() {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const SOUNDS = [
-    { id: "rain", title: "Gentle Rain", icon: CloudRain, url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-    { id: "waves", title: "Ocean Waves", icon: Waves, url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-    { id: "forest", title: "Forest Birds", icon: Trees, url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-    { id: "wind", title: "Soft Wind", icon: Wind, url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" }
+    { id: "rain", title: "Gentle Rain", icon: CloudRain, url: "https://www.soundjay.com/nature/rain-01.mp3" },
+    { id: "waves", title: "Ocean Waves", icon: Waves, url: "https://www.soundjay.com/nature/ocean-wave-1.mp3" },
+    { id: "forest", title: "Forest Birds", icon: Trees, url: "https://www.soundjay.com/nature/forest-birds-01.mp3" },
+    { id: "wind", title: "Soft Wind", icon: Wind, url: "https://www.soundjay.com/nature/wind-01.mp3" }
   ];
 
   const toggleSound = (sound: any) => {
@@ -254,11 +254,22 @@ function SoundScape() {
       setActiveSound(null);
     } else {
       if (audioRef.current) {
+        // Stop any current playback
+        audioRef.current.pause();
         audioRef.current.src = sound.url;
-        audioRef.current.load(); // Ensure the new source is loaded
-        audioRef.current.play().catch(error => {
-          console.error("Audio play failed:", error);
-        });
+        audioRef.current.load();
+        
+        // Play only after a short delay to ensure source is ready
+        const playAudio = () => {
+          audioRef.current?.play().catch(error => {
+            console.error("Audio play failed:", error);
+            // If play fails, we might need user interaction, but since this is 
+            // triggered by a click, it should usually work.
+          });
+        };
+
+        // Some browsers need a tiny bit of time after src change
+        setTimeout(playAudio, 50);
       }
       setActiveSound(sound.id);
     }
@@ -352,7 +363,7 @@ function GuidedImagery() {
       <div className="flex justify-center gap-4">
         <audio
           ref={audioRef}
-          src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"
+          src="https://www.soundjay.com/nature/river-1.mp3"
           loop
         />
         <Button
