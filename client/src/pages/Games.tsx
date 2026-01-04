@@ -259,13 +259,19 @@ function SoundScape() {
         audioRef.current.src = sound.url;
         audioRef.current.load();
         
-        // Play only after a short delay to ensure source is ready
-        const playAudio = () => {
-          audioRef.current?.play().catch(error => {
-            console.error("Audio play failed:", error);
-            // If play fails, we might need user interaction, but since this is 
-            // triggered by a click, it should usually work.
-          });
+        // Use a flag to track if this specific play request is still valid
+        const currentSoundId = sound.id;
+        
+        const playAudio = async () => {
+          try {
+            if (activeSound === currentSoundId || (activeSound === null && currentSoundId)) {
+               await audioRef.current?.play();
+            }
+          } catch (error: any) {
+            if (error.name !== 'AbortError') {
+              console.error("Audio play failed:", error);
+            }
+          }
         };
 
         // Some browsers need a tiny bit of time after src change
@@ -326,14 +332,21 @@ function GuidedImagery() {
     return () => clearInterval(interval);
   }, [isPlaying, timeLeft]);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
+      try {
+        if (isPlaying) {
+          audioRef.current.pause();
+          setIsPlaying(false);
+        } else {
+          await audioRef.current.play();
+          setIsPlaying(true);
+        }
+      } catch (error: any) {
+        if (error.name !== 'AbortError') {
+          console.error("Audio play failed:", error);
+        }
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
