@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import session from "express-session"; // <-- NEW
 
 const app = express();
 const httpServer = createServer(app);
@@ -11,6 +12,22 @@ declare module "http" {
     rawBody: unknown;
   }
 }
+
+//
+// SESSION MIDDLEWARE (NEW)
+//
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "dev-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // true only with HTTPS
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    },
+  })
+);
 
 app.use(
   express.json({
@@ -79,7 +96,6 @@ app.use((req, res, next) => {
 
   const port = parseInt(process.env.PORT || "5000", 10);
 
-  // FIXED: bind to localhost instead of 0.0.0.0 to avoid ENOTSUP on Windows
   httpServer.listen(
     {
       port,
