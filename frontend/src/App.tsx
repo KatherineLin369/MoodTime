@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Sidebar, MobileHeader } from "@/components/Navigation";
 import { Loader2 } from "lucide-react";
 
-// Pages
+// Existing pages
 import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
 import MoodJournal from "@/pages/MoodJournal";
@@ -16,6 +16,11 @@ import Games from "@/pages/Games";
 import Resources from "@/pages/Resources";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/not-found";
+
+// NEW pages
+import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
+import Dashboard from "@/pages/Dashboard";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -29,8 +34,6 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   }
 
   if (!isAuthenticated) {
-    // Redirect logic handled inside useAuth or typically we render Landing
-    // But for cleaner UX, let's just return Landing here if on a protected route
     return <Landing />;
   }
 
@@ -53,21 +56,23 @@ function Router() {
 
   if (isLoading) return null;
 
-  // Public route
+  // PUBLIC ROUTES
   if (!isAuthenticated) {
     return (
       <Switch>
         <Route path="/" component={Landing} />
-        {/* Redirect any other path to landing for unauth users */}
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
         <Route component={Landing} />
       </Switch>
     );
   }
 
-  // Protected routes
+  // PROTECTED ROUTES
   return (
     <Switch>
       <Route path="/" component={() => <ProtectedRoute component={Home} />} />
+      <Route path="/dashboard" component={() => <ProtectedRoute component={Dashboard} />} />
       <Route path="/mood" component={() => <ProtectedRoute component={MoodJournal} />} />
       <Route path="/chat" component={() => <ProtectedRoute component={AIChat} />} />
       <Route path="/games" component={() => <ProtectedRoute component={Games} />} />
@@ -78,7 +83,7 @@ function Router() {
   );
 }
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -88,5 +93,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;
