@@ -1,20 +1,29 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
+import { type Server } from "http";
 import { storage } from "./storage";
+import authRoutes from "./auth";
 
-// Clean version — no Replit auth, no chat/image integrations
+// Clean version — now includes auth routes + real user sessions
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
 
-  // Application Routes (no authentication yet)
+  //
+  // AUTH ROUTES
+  //
+  app.use("/api/auth", authRoutes);
+
+  //
+  // APPLICATION ROUTES (now protected)
+  //
 
   // Mood Entries
   app.get("/api/moods", async (req, res) => {
     try {
-      // TEMP: no auth — replace with real user ID later
-      const userId = "demo-user";
+      const userId = req.session.userId;
+      if (!userId) return res.status(401).json({ message: "Not logged in" });
+
       const moods = await storage.getMoodEntries(userId);
       res.json(moods);
     } catch (err) {
@@ -24,11 +33,14 @@ export async function registerRoutes(
 
   app.post("/api/moods", async (req, res) => {
     try {
-      const userId = "demo-user"; // TEMP
+      const userId = req.session.userId;
+      if (!userId) return res.status(401).json({ message: "Not logged in" });
+
       const mood = await storage.createMoodEntry({
         ...req.body,
         userId,
       });
+
       res.status(201).json(mood);
     } catch (err) {
       res.status(500).json({ message: "Failed to create mood" });
@@ -38,7 +50,9 @@ export async function registerRoutes(
   // Gratitude Entries
   app.get("/api/gratitude", async (req, res) => {
     try {
-      const userId = "demo-user"; // TEMP
+      const userId = req.session.userId;
+      if (!userId) return res.status(401).json({ message: "Not logged in" });
+
       const entries = await storage.getGratitudeEntries(userId);
       res.json(entries);
     } catch (err) {
@@ -48,11 +62,14 @@ export async function registerRoutes(
 
   app.post("/api/gratitude", async (req, res) => {
     try {
-      const userId = "demo-user"; // TEMP
+      const userId = req.session.userId;
+      if (!userId) return res.status(401).json({ message: "Not logged in" });
+
       const entry = await storage.createGratitudeEntry({
         ...req.body,
         userId,
       });
+
       res.status(201).json(entry);
     } catch (err) {
       res.status(500).json({ message: "Failed to create gratitude entry" });
