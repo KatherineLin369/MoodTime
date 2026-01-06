@@ -1,14 +1,13 @@
 import express from "express";
 import session from "express-session";
-import authRoutes from "./server/auth";
-import moodRoutes from "./server/routes";
+import { createServer } from "http";
+import { registerRoutes } from "./server/routes";
 
 const app = express();
+const httpServer = createServer(app);
 
-// Parse JSON request bodies
+// Middleware
 app.use(express.json());
-
-// Session middleware
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "default-secret",
@@ -17,12 +16,11 @@ app.use(
   })
 );
 
-// Routes
-app.use("/auth", authRoutes);
-app.use("/api", moodRoutes);
+// Register all routes
+await registerRoutes(httpServer, app);
 
 // Start server
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
 });
