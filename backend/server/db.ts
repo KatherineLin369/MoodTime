@@ -3,7 +3,7 @@ dotenv.config();
 
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
-import * as schema from "@shared/schema";
+import * as schema from "./schema"; // <-- FIXED
 
 const { Pool } = pg;
 
@@ -29,5 +29,3 @@ export async function testConnection() {
     console.error("Database connection error:", err);
   }
 }
-
-// testConnection();

@@ -1,4 +1,12 @@
-import { moodEntries, gratitudeEntries, type MoodEntry, type InsertMoodEntry, type GratitudeEntry, type InsertGratitudeEntry } from "@shared/schema";
+import {
+  moodEntries,
+  gratitudeEntries,
+  type MoodEntry,
+  type InsertMoodEntry,
+  type GratitudeEntry,
+  type InsertGratitudeEntry
+} from "./schema"; // <-- FIXED
+
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
 
